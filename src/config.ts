@@ -37,5 +37,5 @@ export default Object.freeze({
   TOKEN_SIGNING_USER_INTERACTION_TIMEOUT: 1000 * 60 * 5, // 5 minutes
 
   // Default: false
-  DEBUG: process.env.DEBUG?.toUpperCase() === "TRUE",
+  DEBUG: true,
 });

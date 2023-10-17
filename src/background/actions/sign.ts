@@ -93,6 +93,6 @@ export default async function sign(
 
     return actionErrorHandler(Action.SIGN_FAILURE, error, libraryVersion, nativeAppStatus?.version);
   } finally {
-    nativeAppService?.close();
+    // nativeAppService?.close();
   }
 }

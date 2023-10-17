@@ -4,6 +4,7 @@ import alias from "@rollup/plugin-alias";
 import cleanup from "rollup-plugin-cleanup";
 import injectProcessEnv from "rollup-plugin-inject-process-env";
 import license from "rollup-plugin-license";
+import polyfill from "rollup-plugin-polyfill";
 import resolve from "@rollup/plugin-node-resolve";
 
 const projectRootDir = path.resolve(__dirname);

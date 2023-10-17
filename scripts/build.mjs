@@ -131,6 +131,7 @@ const targets = {
     rem(
       "Creating packages"
     );
+    sourceDateEpoch = await getSourceDateEpoch();
     await zip("./dist/firefox", "./dist/firefox.zip", sourceDateEpoch.date);
     await zip("./dist/chrome", "./dist/chrome.zip", sourceDateEpoch.date);
   }

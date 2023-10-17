@@ -49,7 +49,7 @@ export default async function status(libraryVersion: string): Promise<ExtensionS
     );
 
     await nativeAppService.send({
-      command:   "quit",
+      command:   "ping",
       arguments: {},
     });
 
@@ -81,6 +81,6 @@ export default async function status(libraryVersion: string): Promise<ExtensionS
       error:  serializeError(error),
     };
   } finally {
-    nativeAppService.close();
+    // nativeAppService.close();
   }
 }

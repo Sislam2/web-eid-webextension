@@ -43,12 +43,14 @@ export enum NativeAppState {
   DISCONNECTED,
 }
 
-export default class NativeAppService {
+export class NativeAppServiceS {
   public state: NativeAppState = NativeAppState.UNINITIALIZED;
 
   private port: Port | null = null;
   private pending: UnwrappedPromise = null;
-  private activeConnection: UnwrappedPromise = null;
+  public activeConnection: UnwrappedPromise = null;
+
+  public version: any;
 
   async connect(): Promise<{ version: string }> {
     this.state = NativeAppState.CONNECTING;
@@ -56,10 +58,13 @@ export default class NativeAppService {
     this.port = browser.runtime.connectNative(config.NATIVE_APP_NAME);
     this.port.onDisconnect.addListener(this.disconnectListener.bind(this));
 
+    console.log("Nova conexao", this.state, this.port);
+
     try {
       const message = await this.nextMessage(libraryConfig.NATIVE_APP_HANDSHAKE_TIMEOUT);
 
       if (message.version) {
+        this.version = message.version;
         this.state = NativeAppState.CONNECTED;
         new Promise((resolve, reject) => this.activeConnection = { resolve, reject });
 
@@ -126,6 +131,8 @@ export default class NativeAppService {
           this.pending = { resolve, reject };
 
           const onResponse = async (message: T): Promise<void> => {
+            config.DEBUG && console.log("Received message to native app", JSON.stringify(message));
+
             this.port?.onMessage.removeListener(onResponse);
 
             try {
@@ -239,4 +246,34 @@ export default class NativeAppService {
       this.port.onMessage.addListener(onMessageListener);
     });
   }
+}
+
+const nativeAppServiceM = new NativeAppServiceS();
+
+export default class NativeAppService {
+
+  async connect(): Promise<{ version: string }> {
+
+    if (nativeAppServiceM.state !== NativeAppState.CONNECTED){
+      console.log('Minha classe not connected', nativeAppServiceM, nativeAppServiceM.state);
+      await nativeAppServiceM.connect()
+    } else {
+      console.log('Minha classe not cached');
+    }
+
+    return new Promise((resolve, reject) => { resolve({version: nativeAppServiceM.version}) });
+  }
+
+  async send<T>(message: NativeRequest): Promise<T> {
+    return nativeAppServiceM.send(message);
+  }
+
+  close(): void {
+   // let result = nativeAppServiceM.close();
+    console.log('Minha classe close');
+
+    return;
+   // return result; 
+  }
+
 }
